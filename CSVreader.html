@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <title>CSV Table </title>
+</head>
+<style>
+    table { border-collapse: collapse; }
+    th { color: rgb(235, 252, 5); padding: 5px 5px; }
+    td { 
+        border: 1px solid rgb(30, 255, 0); 
+        padding: 5px 5px; 
+        text-align: center; 
+    }
+</style>
+<script>
+    "use strict";
+    let table = [];
+    let feildNumber = 0;
+    let textShowed = 0;
+    let seprator = ",";
+    function CSVtable() {
+        let text = "";
+        table = [];
+        local.forEach(file => {
+            // console.log(file.data)
+            let lines = file.data.split("\n")
+            lines.forEach(line => {
+                let rows = line.split(seprator);
+                table.push(rows)
+                if (rows.length > feildNumber) {
+                    feildNumber = rows.length;
+                }
+            })
+        })
+        createTable(table)
+    }
+    function exportFile() {
+        //https://stackoverflow.com/questions/14964035/how-to-export-javascript-array-info-to-csv-on-client-side
+        let csvContent = "data:text/csv;charset=utf-8," + table.map(e => e.join(",")).join("\n");
+        var encodedUri = encodeURI(csvContent);
+        var link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", "my_data.csv");
+        document.body.appendChild(link); // Required for FF
+        link.click();
+    }
+    function addData() {
+        if (textShowed == 0) {
+            document.getElementById("header1").style.display = "";
+
+            for (let index = 0; index < feildNumber; index++) {
+                createTextFeild(index);
+            }
+            textShowed = 1;
+        } else {
+            let userData = [];
+            for (let index = 0; index < feildNumber; index++) {
+                userData.push(document.getElementById("userInput" + index).value);
+            }
+            table.push(userData);
+            clearUserInputs();
+            createTable(table);
+        }
+    }
+    function createTextFeild(id) {
+        //https://www.w3schools.com/jsref/dom_obj_text.asp
+        // inputs.innerHTML = "";
+        var textFeild = document.createElement("INPUT");
+        textFeild.setAttribute("type", "text");
+        textFeild.setAttribute("value", "");
+        textFeild.setAttribute("id", "userInput" + id)
+        inputs.appendChild(textFeild);
+    }
+
+
+
+    function createTable(tableData) {
+        var table = document.getElementById('table');
+        table.innerHTML = "";
+        var tableBody = document.createElement('tbody');
+
+        tableData.forEach(function (rowData) {
+            var row = document.createElement('tr');
+
+            rowData.forEach(function (cellData) {
+                var cell = document.createElement('td');
+                cell.appendChild(document.createTextNode(cellData));
+                row.appendChild(cell);
+            });
+
+            tableBody.appendChild(row);
+        });
+
+        table.appendChild(tableBody);
+        //document.body.appendChild(table);
+        console.log("table created")
+    }
+
+    let local = []
+    let remote;
+    // written for more than one file - optimizable
+    function fileSelect(evt) {
+        local = []
+        var files = evt.files; // FileList object
+
+        for (let file of files) {
+            let reader = new FileReader();
+
+            reader.onload = function () {
+                // out.innerText +=reader.result +"\n";
+                local.push({ data: reader.result, name: file.name, type: file.type });
+                CSVtable();
+            }
+            reader.readAsText(file);
+
+        }
+        reset();
+        showElemants();
+
+    }
+
+    function hideElemants() {
+        document.getElementById("adder").style.display = "none";
+        document.getElementById("exporter").style.display = "none";
+        document.getElementById("header1").style.display = "none";
+
+
+    }
+    function resetAdd() {
+        textShowed = 0;
+        feildNumber = 0;
+        inputs.innerHTML = "";
+        document.getElementById("header1").style.display = "none";
+
+
+    }
+    function showElemants() {
+        document.getElementById("exporter").style.display = "";
+        document.getElementById("adder").style.display = "";
+    }
+
+    function clearUserInputs() {
+        for (let index = 0; index < feildNumber; index++) {
+            document.getElementById("userInput" + index).value = "";
+        }
+
+    }
+    function changeSeprator() {
+        seprator = document.getElementById("sepratorVal").value;
+    }
+    function resetSeprator() {
+        seprator = document.getElementById("sepratorVal").value = ",";
+    }
+    function reset() {
+
+        resetAdd();
+        resetSeprator();
+    }
+
+</script>
+
+<body>
+    <h2 id=title></h2>
+
+    <p id=outA></p>
+    <!-- if you wrote mupltiple at the input it will let you choose more than one file -->
+    Seprator = <input type=text value="," id=sepratorVal onChange='changeSeprator()' style="font: 20px arial, sans-serif;"/>
+
+    <input type=file id=loader onChange='fileSelect(this)' />
+    <input type="button" value="Add Data" id=adder onclick='addData()' />
+    <input type="button" value="export Data" id=exporter onclick='exportFile()' />
+
+    <hr id=header1>
+    <div id=inputs></div>
+    <!-- <hr /> -->
+    <hr>
+    <div id=table></div>
+    <hr />
+
+
+    <script>
+        title.innerText = "CSV";
+        hideElemants();
+    //  reportA("start");
+    </script>
+
+</body>
+
+</html>
+
+<!-- TODO : 
+    change the seprator manually [done]
+    Change the delimitar based on the text -     Check the seprator 
+    check the text before parsing  -- yeah its a bug xD 
+    build a better UI 
+    add remote file
+    add text reader -- parse from it ==> text feild 
+    export the file  [done]
+    be tensive to the file format/data 
+    make a better table by using JS DataTables
+    check other projects to compare and see what can you do.
+    file name when download ==> based on checkBox
+
+    // for the case intensive string comparasion- you can just lower case both of them xD
+    ToCheck :
+    google resreach about CSV js project 
+    https://stackoverflow.com/questions/30223361/js-filereader-read-csv-from-local-file-jquery-csv
+    https://stackoverflow.com/questions/1293147/javascript-code-to-parse-csv-data
+    https://www.papaparse.com/
+    https://en.wikipedia.org/wiki/Comma-separated_values
+    https://github.com/okfn/csv.js/
+
+    https://github.com/evanplaice/jquery-csv
+-->
