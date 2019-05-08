@@ -5,193 +5,406 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width">
     <title>CSV Table </title>
-</head>
-<style>
-    table { border-collapse: collapse; }
-    th { color: rgb(235, 252, 5); padding: 5px 5px; }
-    td { 
-        border: 1px solid rgb(30, 255, 0); 
-        padding: 5px 5px; 
-        text-align: center; 
-    }
-</style>
-<script>
-    "use strict";
-    let table = [];
-    let feildNumber = 0;
-    let textShowed = 0;
-    let seprator = ",";
-    function CSVtable() {
-        let text = "";
-        table = [];
-        local.forEach(file => {
-            // console.log(file.data)
-            let lines = file.data.split("\n")
-            lines.forEach(line => {
-                let rows = line.split(seprator);
-                table.push(rows)
-                if (rows.length > feildNumber) {
-                    feildNumber = rows.length;
-                }
-            })
-        })
-        createTable(table)
-    }
-    function exportFile() {
-        //https://stackoverflow.com/questions/14964035/how-to-export-javascript-array-info-to-csv-on-client-side
-        let csvContent = "data:text/csv;charset=utf-8," + table.map(e => e.join(",")).join("\n");
-        var encodedUri = encodeURI(csvContent);
-        var link = document.createElement("a");
-        link.setAttribute("href", encodedUri);
-        link.setAttribute("download", "my_data.csv");
-        document.body.appendChild(link); // Required for FF
-        link.click();
-    }
-    function addData() {
-        if (textShowed == 0) {
-            document.getElementById("header1").style.display = "";
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+    </style>
 
-            for (let index = 0; index < feildNumber; index++) {
-                createTextFeild(index);
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.6/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.html5.min.js"></script>
+    <script>
+        "use strict";
+        let source = [];
+        let colNumber = 0;
+        let textShowed = 0;
+        let headerDataShowed = false;
+        let seprator = ",";
+        // read data from file and create The table.
+        function CSVtable() {
+            readFile();
+            createTable(source);
+            dataTables();
+        }
+        // file reader 
+        function readFile() {
+            let text = "";
+            source = [];
+            local.forEach(file => {
+                // console.log(file.data)
+                let lines = file.data.split("\n")
+                lines.forEach(line => {
+                    let rows = line.split(seprator);
+                    source.push(rows)
+                    if (rows.length > colNumber) {
+                        colNumber = rows.length;
+                    }
+                })
+            })
+        }
+        // add extra text area to use it for data input.
+        function addFeild() {
+            // appendDataColumn();
+            createTextFeild(colNumber);
+            colNumber += 1;
+        }
+        // change headers 
+        function setHeader() {
+
+            if (textShowed == 0) {
+                textInputsCreator(source[0]);
+                headerDataShowed= true;
+            } else if (headerDataShowed == false) {
+                showHeaderData();
+            } else {
+                destroyDataTables();
+                source[0] = getUserInputs();
+                clearUserInputs();
+                createTable(source);
+                dataTables();
             }
-            textShowed = 1;
-        } else {
+
+        }
+        function showHeaderData() {
+            headerDataShowed = true;
+            for (let index = 0; index < colNumber; index++) {
+                document.getElementById("userInput" + index).value = source[0][index]
+            }
+        }
+        // export file as CSV.
+        function exportFile() {
+            //https://stackoverflow.com/questions/14964035/how-to-export-javascript-array-info-to-csv-on-client-side
+            let csvContent = "data:text/csv;charset=utf-8," + source.map(e => e.join(",")).join("\n");
+            var encodedUri = encodeURI(csvContent);
+            var link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "my_data.csv");
+            document.body.appendChild(link); // Required for FF
+            link.click();
+        }
+        //add datat to table or create the text input
+        function addData() {
+            if (textShowed == 0) {
+                textInputsCreator();
+            } else {
+                destroyDataTables();
+                userDataUpdate();
+                clearUserInputs();
+                createTable(source);
+                dataTables();
+            }
+        }
+        // get all user data from text feild and add it to data source
+        function getUserInputs() {
             let userData = [];
-            for (let index = 0; index < feildNumber; index++) {
+            for (let index = 0; index < colNumber; index++) {
                 userData.push(document.getElementById("userInput" + index).value);
             }
-            table.push(userData);
-            clearUserInputs();
-            createTable(table);
+            return userData;
         }
-    }
-    function createTextFeild(id) {
-        //https://www.w3schools.com/jsref/dom_obj_text.asp
-        // inputs.innerHTML = "";
-        var textFeild = document.createElement("INPUT");
-        textFeild.setAttribute("type", "text");
-        textFeild.setAttribute("value", "");
-        textFeild.setAttribute("id", "userInput" + id)
-        inputs.appendChild(textFeild);
-    }
+        // add user data to the source
+        function userDataUpdate() {
+            source.push(getUserInputs());
+        }
+        // create all text feild for user input 
+        function textInputsCreator(text = "") {
+            document.getElementById("header1").style.display = "";
+            document.getElementById("inputs").innerHTML = ""
+
+            for (let index = 0; index < colNumber; index++) {
+                createTextFeild(index, text[index]);
+            }
+            textShowed = 1;
+        }
+        // create text input
+        function createTextFeild(id, text = "") {
+            //https://www.w3schools.com/jsref/dom_obj_text.asp
+            // inputs.innerHTML = "";
+            var textFeild = document.createElement("INPUT");
+            textFeild.setAttribute("type", "text");
+            textFeild.setAttribute("value", text);
+            textFeild.setAttribute("id", "userInput" + id)
+            inputs.appendChild(textFeild);
+        }
 
 
+        // destroyed at this point xD 
 
-    function createTable(tableData) {
-        var table = document.getElementById('table');
-        table.innerHTML = "";
-        var tableBody = document.createElement('tbody');
+        // create table and add data on it.
+        function createTable(tableData) {
+            var table = document.getElementById('table');
+            table.innerHTML = "";
+            createTableElemants(tableData.slice(0, 1), "thead");
+            createTableElemants(tableData.slice(1), "tbody");
+            // dataTables();
 
-        tableData.forEach(function (rowData) {
-            var row = document.createElement('tr');
+        }
+        // create HTML elemants for data.
+        function createTableElemants(tableData, name) {
+            var table = document.getElementById('table');
+            var elemants;
+            if (!name) {
+                elemants = table.getElementsByTagName("tbody");
+            } else {
+                elemants = document.createElement(name);
+            }
 
-            rowData.forEach(function (cellData) {
-                var cell = document.createElement('td');
-                cell.appendChild(document.createTextNode(cellData));
-                row.appendChild(cell);
+
+            tableData.forEach(function (rowData) {
+                var row = document.createElement('tr');
+
+                rowData.forEach(function (cellData) {
+                    var cell = document.createElement('td');
+                    cell.appendChild(document.createTextNode(cellData));
+                    row.appendChild(cell);
+                });
+
+                elemants.appendChild(row);
             });
 
-            tableBody.appendChild(row);
-        });
+            table.appendChild(elemants);
+            //document.body.appendChild(table);
+            console.log(name + " created")
 
-        table.appendChild(tableBody);
-        //document.body.appendChild(table);
-        console.log("table created")
-    }
+        }
 
-    let local = []
-    let remote;
-    // written for more than one file - optimizable
-    function fileSelect(evt) {
-        local = []
-        var files = evt.files; // FileList object
 
-        for (let file of files) {
-            let reader = new FileReader();
+        // destroy table.  // did not work went with other version 
+        function clearTable() {
+            textShowed = 0;
+            var table = $('#table').DataTable();
+            //clear datatable
+            table.clear().draw();
+            //destroy datatable
+            table.destroy();
+        }
 
-            reader.onload = function () {
-                // out.innerText +=reader.result +"\n";
-                local.push({ data: reader.result, name: file.name, type: file.type });
-                CSVtable();
+        let local = []
+        let remote;
+        // written for more than one file - optimizable
+        function fileSelect(evt) {
+            local = []
+            var files = evt.files; // FileList object
+
+            for (let file of files) {
+                let reader = new FileReader();
+
+                reader.onload = function () {
+                    // out.innerText +=reader.result +"\n";
+                    local.push({ data: reader.result, name: file.name, type: file.type });
+                    CSVtable();
+                }
+                reader.readAsText(file);
+
             }
-            reader.readAsText(file);
+            reset();
+            showElemants();
 
         }
-        reset();
-        showElemants();
-
-    }
-
-    function hideElemants() {
-        document.getElementById("adder").style.display = "none";
-        document.getElementById("exporter").style.display = "none";
-        document.getElementById("header1").style.display = "none";
+        // hide exporter , data adder and feild adder.
+        function hideElemants() {
+            document.getElementById("tableEditor").style.display = "none";
+            // document.getElementById("exporter").style.display = "none";
+            // document.getElementById("header1").style.display = "none";
+            // document.getElementById("feildplus").style.display = "none";
 
 
-    }
-    function resetAdd() {
-        textShowed = 0;
-        feildNumber = 0;
-        inputs.innerHTML = "";
-        document.getElementById("header1").style.display = "none";
-
-
-    }
-    function showElemants() {
-        document.getElementById("exporter").style.display = "";
-        document.getElementById("adder").style.display = "";
-    }
-
-    function clearUserInputs() {
-        for (let index = 0; index < feildNumber; index++) {
-            document.getElementById("userInput" + index).value = "";
         }
+        // remove all user input feild.
+        function resetAdd() {
 
-    }
-    function changeSeprator() {
-        seprator = document.getElementById("sepratorVal").value;
-    }
-    function resetSeprator() {
-        seprator = document.getElementById("sepratorVal").value = ",";
-    }
-    function reset() {
+            textShowed = 0;
+            colNumber = 0;
+            inputs.innerHTML = "";
+            document.getElementById("header1").style.display = "none";
 
-        resetAdd();
-        resetSeprator();
+
+        }
+        // idk why do i have it,even tho its useless... if you got the idea of this function it would be amazing to explain it to me :) 
+        function updateTable() {
+            source = []
+            source.push(source)
+        }
+        // show exporter , data adder and feild adder.
+        function showElemants() {
+            document.getElementById("tableEditor").style.display = "";
+            // document.getElementById("adder").style.display = "";
+            // document.getElementById("feildplus").style.display = "";
+        }
+        // clear input text feild of user 
+        function clearUserInputs() {
+            headerDataShowed = false;
+            for (let index = 0; index < colNumber; index++) {
+                document.getElementById("userInput" + index).value = "";
+            }
+
+        }
+        // getter for seprator value
+        function changeSeprator() {
+            seprator = document.getElementById("sepratorVal").value;
+        }
+        // set seprater to comma
+        function resetSeprator() {
+            seprator = document.getElementById("sepratorVal").value = ",";
+        }
+        // wrapper for resteAdd and reset Seprator
+        function reset() {
+
+
+            resetAdd();
+            resetSeprator();
+        }
+        // create DIV element and append to the table cell
+        function createCell(cell, text, style) {
+            var div = document.createElement('div'), // create DIV element
+                txt = document.createTextNode(text); // create text node
+            div.appendChild(txt);                    // append text node to the DIV
+            div.setAttribute('class', style);        // set DIV class attribute
+            div.setAttribute('className', style);    // set DIV class attribute for IE (?!)
+            cell.appendChild(div);                   // append DIV to the table cell
+        }
+        // append column to the HTML table
+        function appendColumn() {
+            var tbl = document.getElementById('table'), // table reference
+                i;
+            // open loop for each row and append cell
+            for (i = 0; i < tbl.rows.length; i++) {
+                createCell(tbl.rows[i].insertCell(tbl.rows[i].cells.length), i, 'col');
+            }
+        }
+        // warper for the add data thingy.
+        function appendDataColumn() {
+            if (textShowed != 0) {
+                addFeild();
+            }
+            destroyDataTables();
+            addColumn();
+            createTable(source);
+            dataTables();
+        }
+        // add row to data which immediatly add row when Createtable again - create table use the table delete the old and add new one.
+        function addColumn() {
+            // source.forEach(row => {
+            //     row.push(" ");
+            // });
+            // createTable(source);
+            let colName = prompt("Please enter the Column name", "Any name you desire");
+            if (colName == null || colName == "") {
+                console.log("cancelled")
+            } else {
+                // add empty data for ery record and for the first one add the column name.
+                source.forEach(
+                    function (row, i) {
+                        if (i == 0) {
+                            row.push(colName)
+                        } else {
+                            row.push(" ");
+                        }
+
+                    }
+                );
+
+            }
+        }
+        // enable data tables function for extra power.
+        function dataTables() {
+
+            // /
+            //     $(document).ready(function () {
+
+            // });
+
+            // $('#table').DataTable();
+            $('#table').DataTable({
+                destroy: true,
+                cache: true,
+                // data: source,
+                dom: 'Bfrtip',
+                buttons: [
+                    'copyHtml5',
+                    'excelHtml5',
+                    'csvHtml5',
+                    'pdfHtml5'
+                ]
+            });
+
+
+        }
+        function destroyDataTables() {
+            if ($.fn.DataTable.isDataTable('#table')) {
+                $('#table').DataTable().destroy();
+                // $('#table').empty();
+            };
+        }
+    </script>
+
+</head>
+<style>
+    table {
+        border-collapse: collapse;
     }
 
-</script>
+    th {
+        color: rgb(235, 252, 5);
+        padding: 5px 5px;
+    }
+
+    td {
+        border: 1px solid rgb(30, 255, 0);
+        padding: 5px 5px;
+        text-align: center;
+    }
+</style>
 
 <body>
     <h2 id=title></h2>
 
     <p id=outA></p>
     <!-- if you wrote mupltiple at the input it will let you choose more than one file -->
-    Seprator = <input type=text value="," id=sepratorVal onChange='changeSeprator()' style="font: 20px arial, sans-serif;"/>
+    Seprator = <input type=text value="," id=sepratorVal onChange='changeSeprator()'
+        style="font: 20px arial, sans-serif;" />
 
     <input type=file id=loader onChange='fileSelect(this)' />
-    <input type="button" value="Add Data" id=adder onclick='addData()' />
-    <input type="button" value="export Data" id=exporter onclick='exportFile()' />
+    <div id=tableEditor>
+        <br>
+        <input type="button" value="Add Data" id=adder onclick='addData()' />
+        <input type="button" value="Set Header" id=adder onclick='setHeader()' />
+
+        <!-- <input type="button" value="export Data" id=exporter onclick='exportFile()' />
+        <input type="button" value="Add feild" id=feildplus onclick='addFeild()' />
+        <input type="button" value="Enable Editing" id=dataTables onclick='dataTables()' /> -->
+        <input type="button" value="Add coloumn" id=coloumn onclick='appendDataColumn()' />
+    </div>
 
     <hr id=header1>
     <div id=inputs></div>
     <!-- <hr /> -->
     <hr>
-    <div id=table></div>
+    <table contenteditable="true" id=table></table>
     <hr />
+
+
 
 
     <script>
         title.innerText = "CSV";
         hideElemants();
+        ScriptsLoader();
+
     //  reportA("start");
     </script>
 
 </body>
 
+
 </html>
 
 <!-- TODO : 
+    GO TO DATATABLES then MOVE TO PURE JS 
+    check if we need to storage data - you may add it depends on the file size or have two methods 
+    change update the table and write methods with storage data in local, and without it.
     change the seprator manually [done]
     Change the delimitar based on the text -     Check the seprator 
     check the text before parsing  -- yeah its a bug xD 
@@ -203,7 +416,6 @@
     make a better table by using JS DataTables
     check other projects to compare and see what can you do.
     file name when download ==> based on checkBox
-
     // for the case intensive string comparasion- you can just lower case both of them xD
     ToCheck :
     google resreach about CSV js project 
@@ -212,6 +424,5 @@
     https://www.papaparse.com/
     https://en.wikipedia.org/wiki/Comma-separated_values
     https://github.com/okfn/csv.js/
-
     https://github.com/evanplaice/jquery-csv
 -->
