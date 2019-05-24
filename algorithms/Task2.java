@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package algorthm;
+package algorithms;
 
-import static algorthm.Algorthm.time;
+import static algorithms.optimizationTime.time;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -20,6 +20,10 @@ import javax.crypto.Mac;
  */
 public class Task2 {
 
+    /**
+     *
+     * @param args
+     */
     public static void main(String[] args) {
 
         int[] ex1 = {2, 4, 1, 8, 2, 1, 4};
@@ -66,6 +70,12 @@ public class Task2 {
 //return solution
 //return NO SOLUTION
 
+    /**
+     *
+     * @param maxLoad
+     * @param masses
+     * @return
+     */
     public static int[] greedy(int maxLoad, int masses[]) {
         int[] unsorted = Arrays.copyOf(masses, masses.length);
         Arrays.sort(masses);
@@ -103,6 +113,11 @@ public class Task2 {
         return new int[]{0};
     }
 
+    /**
+     *
+     * @param Array
+     * @return
+     */
     public static int[] powerTwo(int[] Array) {
         int[] numberArray = Array.clone();
         for (int i = 0; i < numberArray.length; i++) {
@@ -111,16 +126,34 @@ public class Task2 {
         return numberArray;
     }
 
+    /**
+     *
+     * @param x
+     * @param y
+     * @return
+     */
     public static int max(int x, int y) {
         return x > y ? x : y;
     }
 
+    /**
+     *
+     * @param x
+     * @param y
+     * @return
+     */
     public static int min(int x, int y) {
         return x < y ? x : y;
     }
 
     static int[][] ksSol = new int[8][11];
 
+    /**
+     *
+     * @param maxLoad
+     * @param masses
+     * @return
+     */
     public static int ks(int maxLoad, int masses[]) {
         int result;
         if (ksSol[masses.length][maxLoad] != 0) {
@@ -141,6 +174,12 @@ public class Task2 {
         return result;
     }
 
+    /**
+     *
+     * @param maxLoad
+     * @param masses
+     * @return
+     */
     public static int itKS(int maxLoad, int masses[]) {
         int table[][] = new int[maxLoad][masses.length];
         for (int i = 0; i < maxLoad; i++) {
@@ -229,6 +268,10 @@ public class Task2 {
         return table[items.length][maxLoad];
     }
 
+    /**
+     *
+     * @param table
+     */
     public static void printTable(int table[][]) {
         System.out.println("Printing");
 //        System.out.println(" = ");
@@ -248,6 +291,12 @@ public class Task2 {
         System.out.println(" finished XD ");
     }
 
+    /**
+     *
+     * @param maxLoad
+     * @param table
+     * @param weight
+     */
     public static void tableCraw(int maxLoad, int table[][], int weight[]) {
 //        printTable(table);
         int m = maxLoad;
@@ -265,6 +314,12 @@ public class Task2 {
         System.out.println("end of it");
     }
 
+    /**
+     *
+     * @param maxLoad
+     * @param table
+     * @param weight
+     */
     public static void minTableCraw(int maxLoad, int table[][], int weight[]) {
 //        printTable(table);
         ArrayList<Integer> temp = new ArrayList<>();
@@ -325,6 +380,12 @@ public class Task2 {
 //        System.out.println("end of it");
     }
 
+    /**
+     *
+     * @param items
+     * @param weight
+     * @return
+     */
     public static int dpKS(int[] items, int weight) {
         int table[][] = new int[items.length][weight];
         for (int i = 0; i < items.length; i++) {
@@ -357,6 +418,14 @@ w[j] + M[j-1, W-w[j]]
 )
 Return M[n,W]
      */
+
+    /**
+     *
+     * @param items
+     * @param w
+     * @return
+     */
+
     public static int subSum(int[] items, int w) {
         int table[][] = new int[items.length][w];
         for (int i = 0; i < w; i++) {
@@ -379,6 +448,10 @@ Return M[n,W]
         return 0;
     }
 
+    /**
+     *
+     * @param n
+     */
     public static void fileToArray(int n) {
         Scanner sc;
         try {
@@ -396,6 +469,11 @@ Return M[n,W]
         }
     }
 
+    /**
+     *
+     * @param maxLoad
+     * @param x
+     */
     public static void both(int maxLoad, int[] x) {
         System.err.println("normal numbers");
         System.out.println(knapSack(maxLoad, x));

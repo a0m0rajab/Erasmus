@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package algorthm;
+package algorithms;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -17,18 +17,19 @@ import java.util.logging.Logger;
  * @author LENOVO
  */
 public class Sort {
+
     // well idk why i used it when i wrote the code, i think i have to analyse it and check it again later, 
     // but in geenral it count the number of operations in the algorithm.
     static int ops = 0;
-
     /**
-     *
-     * @param args
+     * warper method for all test methods.
+     * <br> it calls the most occurence test. 
+     * <br> and the sorting test.
+     * 
      */
-    public static void main(String[] args) {
-        Sort s = new Sort();
-        s.testMostOccurence();
-        s.testSorting();
+    void testall() {
+        testMostOccurence();
+        testSorting();
     }
 
     /**
@@ -127,7 +128,7 @@ public class Sort {
     }
 
     /**
-     * A test of using the mergeSort algorithm.
+     * A test methdos of using the mergeSort algorithm.
      */
     public void testSorting() {
         long[] actual = {5, 1, 6, 3, 3, 4};
@@ -137,11 +138,11 @@ public class Sort {
     }
 
     /**
-     * A methdo to test the most occurence number in the array.
+     * A method to test the most occurence number in the array.
      */
     public void testMostOccurence() {
         System.out.println("test");
-        long array[] = Algorthm.fileToArray(10);
+        long array[] = fileReaders.fileToArray(10);
         Sort.mergeSort(array, array.length);
         long[] number = mostOccurence(array);
         System.out.println(number[0] + " occurence time " + number[1]);

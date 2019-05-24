@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package why;
+package algorithms;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -18,6 +18,10 @@ import java.util.Scanner;
  */
 public class Dijkestra {
 
+    /**
+     *
+     * @param args
+     */
     public static void main(String[] args) {
         Locale.setDefault(Locale.ENGLISH);
         Dijkestra dj = new Dijkestra();
@@ -37,14 +41,28 @@ public class Dijkestra {
     // the  adjacency matrix 
     int adjMatrics[][];
 
+    /**
+     *
+     * @param adjMatrics
+     * @param start
+     */
     public Dijkestra(int[][] adjMatrics, int start) {
         this.adjMatrics = adjMatrics;
         this.initVertic = start;
     }
 
+    /**
+     *
+     */
     public Dijkestra() {
     }
 
+    /**
+     *
+     * @param adjMatrics
+     * @param start
+     * @param vn
+     */
     public void setDijkestra(int[][] adjMatrics, int start, int vn) {
         this.adjMatrics = adjMatrics;
         this.initVertic = start;
@@ -57,6 +75,9 @@ public class Dijkestra {
 
     }
 
+    /**
+     *
+     */
     public void readFile() {
         Scanner sc;
         try {
@@ -85,6 +106,11 @@ public class Dijkestra {
     /*
     
      */
+
+    /**
+     *
+     */
+
     public void shortestPath() {
         // vertices
         for (int i = 0; i < adjMatrics.length; i++) {
@@ -121,6 +147,9 @@ public class Dijkestra {
 
     }
 
+    /**
+     *
+     */
     public void printAll() {
         System.out.println(steps);
         System.out.println(distance);

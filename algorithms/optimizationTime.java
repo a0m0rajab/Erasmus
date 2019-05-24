@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package algorthm;
+package algorithms;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -18,46 +18,50 @@ import java.util.Scanner;
  *
  * @author Abdurrahman RAJAB
  */
-public class Algorthm {
+public class optimizationTime {
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        // first array from the file
-//        int arr[] = {1, 2, 3, 1, 2, 3, 1, 2, 3};
-//        // try on both algorthms
-//        nTn(arr.length, arr);
-//        n(arr.length, arr);
-//        int x[] = randomArray(100000, 1000);
-//        time(0, x.length, x);
-//        time(1, x.length, x);
-//        time(2, x.length, x);
-//        fileToArray();
-        printAll();
-    }
-
+   
+//    public static void main(String[] args) {
+    // test codes.
+//        // first array from the file
+////        int arr[] = {1, 2, 3, 1, 2, 3, 1, 2, 3};
+////        // try on both algorthms
+////        nTn(arr.length, arr);
+////        n(arr.length, arr);
+////        int x[] = randomArray(100000, 1000);
+////        time(0, x.length, x);
+////        time(1, x.length, x);
+////        time(2, x.length, x);
+////        fileToArray();
+//      
+//    }
     /**
      * A methods that print all the written algorithms, in text-table form.
      * Shows the in-number,algorithm name, most occurened number, the number of
      * occurence, number of operatations and time in millisecond.
      *
      */
-    public static void printAll() {
-        System.out.println("");
-        System.out.printf("%20s %20s %20s %20s %20s %20s \n", "in number", "algorithm", "number", "occurence", "number of ops", "time(mills)");
+    public void printAll() {
+        // since the files name ends with 10,100,1000 till 1000000
         int n = 10;
         long[] x;
         for (int i = 0; i < 3; i++) {
-//        int n = 10;
+//        int n = 10; // yeah logical error, kept to remind me of my small mistakes :) 
 //            Sort.ops = 0;
-            x = fileToArray(n);
+            x = fileReaders.fileToArray(n);
+            print(x);
             n = n * 10;
-
-            for (int j = 0; j < 4; j++) {
-                time(j, x.length, x);
-            }
         }
+    }
+
+    void print(long x[]) {
+        System.out.println("");
+        System.out.printf("%20s %20s %20s %20s %20s %20s \n", "in number", "algorithm", "number", "occurence", "number of ops", "time(mills)");
+
+        for (int j = 0; j < 4; j++) {
+            time(j, x.length, x);
+        }
+
     }
 
     /**
@@ -125,34 +129,6 @@ public class Algorthm {
         Instant finish = Instant.now();
         long timeElapsed = Duration.between(start, finish).toMillis();  //in millis
         System.out.printf("%20d\n", timeElapsed);
-    }
-
-    /**
-     * File reader to convert the readed file to an array and use it on other
-     * methods. input number to check the test data that asked for in the class.
-     *
-     * @param n number of input data in file to read. input Data from 10 power
-     * to 1 till 6.
-     */
-    public static long[] fileToArray(int n) {
-        Scanner sc;
-        try {
-            sc = new Scanner(new File("in" + n + ".txt"));
-            int length = sc.nextInt();
-            long x[] = new long[length];
-            for (int j = 0; j < length; j++) {
-                x[j] = sc.nextLong();
-            }
-//            time(0, length, x);
-//            time(2, length, x);
-//            time(1, length, x);
-//            time(1, length, x);
-            return x;
-        } catch (FileNotFoundException ex) {
-            System.out.println("Please check the file location");
-            return null;
-        }
-
     }
 
     /**
@@ -264,13 +240,15 @@ public class Algorthm {
     }
 
     /**
-     * A method to check that have two array one to keep the number and other to save the occurence number of it.
-     * 
-     * then it compare the numbers and get the most occured. 
+     * A method to check that have two array one to keep the number and other to
+     * save the occurence number of it.
+     *
+     * then it compare the numbers and get the most occured.
      *
      * @param n number of elemants in array
      * @param arr[] the array of elements
-     * @return array contains : the most occured number, occurence time and operation number.
+     * @return array contains : the most occured number, occurence time and
+     * operation number.
      */
     public static long[] nAlgo(int n, long arr[]) {
         // number of operations, numbers array and counter array.

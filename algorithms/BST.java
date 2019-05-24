@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package algorthm;
+package algorithms;
 
 /**
  *
@@ -64,21 +64,21 @@ static final int COUNT = 10;
     }
 
     /**
-     *
+     * Shall be interval....
      * @param root
      * @param value
      * @return
      */
-    public int itervalOneSide(nodeBST root, int value) {
+    public int intervalOneSide(nodeBST root, int value) {
         if (root == null || root.key == value) {
             return 0;
         }
 
         if (root.key > value) {
-            return itervalOneSide(root.left, value) + 1;
+            return intervalOneSide(root.left, value) + 1;
         }
 
-        return itervalOneSide(root.right, value) + 1;
+        return intervalOneSide(root.right, value) + 1;
     }
 
     void inorder() {
@@ -208,8 +208,8 @@ static final int COUNT = 10;
             int x = num > number ? num : number;
             int y = x == num ? number : num;
 
-            int lheight = itervalOneSide(root.left, x);
-            int rheight = itervalOneSide(root.right, y);
+            int lheight = intervalOneSide(root.left, x);
+            int rheight = intervalOneSide(root.right, y);
 
             return (rheight + lheight);
         }

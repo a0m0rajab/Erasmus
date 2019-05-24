@@ -3,9 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package algorthm;
+package algorithms;
 
-import static algorthm.Task2.MinKnapSack;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
@@ -14,37 +13,45 @@ import java.util.Scanner;
  *
  * @author LENOVO
  */
-public class task3 {
+public class fileReaders {
 
-    public static void main(String[] args) {
-        task3 ts = new task3();
-        ts.readFile();
-        
+    /**
+     * File reader to convert the readed file to an array and use it on other
+     * methods. input number to check the test data that asked for in the class.
+     * <br> Used for the first task examples.
+     *
+     * @param n number of input data in file to read. input Data from 10 power
+     * to 1 till 6.
+     * @return a long array contians the array from file or null, if there was
+     * any error.
+     */
+    public static long[] fileToArray(int n) {
+        Scanner sc;
+        try {
+            sc = new Scanner(new File("in" + n + ".txt"));
+            int length = sc.nextInt();
+            long x[] = new long[length];
+            for (int j = 0; j < length; j++) {
+                x[j] = sc.nextLong();
+            }
+//            time(0, length, x);
+//            time(2, length, x);
+//            time(1, length, x);
+//            time(1, length, x);
+            return x;
+        } catch (FileNotFoundException ex) {
+            System.out.println("Please check the file location");
+            return null;
+        }
+
     }
-//    -insert new number
 
-    public void insert() {
-    }
-//-delete a number
-
-    public void delete() {
-    }
-//-search for a number
-
-    public void search() {
-    }
-//-find how many numbers in the set are from interval <a, b> (try to do in effectively without
-//searching the whole tree)
-
-    public void interval() {
-    }
-//-print tree structure on screen
-
-    public void print() {
-    }
-//-construct a tree from file
-
-    public void readFile() {
+    /**
+     * Reads the tree commands and excute them, then print the last version of the tree in tabular mode.
+     * <br> Used for the third task.
+     *
+     */
+    public void BST_Reader() {
         String path = "C:\\Users\\LENOVO\\Downloads\\example_hand.txt";
         Scanner sc;
         try {
