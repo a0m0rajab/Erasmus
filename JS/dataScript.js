@@ -349,7 +349,8 @@ function dataTables() {
                     text: 'Delete rows',
                     action: function (e, dt, node, config) {
                         let count = dt.rows({ selected: true }).count();
-
+                        //  for testing, finding an array that get all the data at it, to use for drawing later.
+                        // console.log(dt.rows({ selected: true }).data());
                         table
                             .rows('.selected')
                             .remove()
@@ -359,17 +360,41 @@ function dataTables() {
                     },
                     // should be false.
                     enabled: true
-                }, {
+                },
+                {
                     text: 'set header',
                     action: function (e, dt, node, config) {
                         setHeader();
                     },
                     enabled: true
-                }, {
+                },
+                {
                     text: 'add column',
                     action: function (e, dt, node, config) {
                         appendDataColumn()
                     },
+                    enabled: true
+                }, {
+
+                    text: 'Draw Pie Chart',
+                    action: function (e, dt, node, config) {
+
+                        let dataArray = dt.rows({ selected: true }).data().toArray();
+                        let category = source[0];
+                        resetDrawingArea()
+                        for (const key in dataArray) {
+                            // data Tables returned the array as String, so i had to parse it into integer before using it.
+                            // StackOver flow used.
+                            let x= dataArray[key].map(Number);
+                            // let y = [1,2,3,4,5];
+                            drawPichart(x, category,0.5);
+                        }
+                        // dataArray.forEach(element => {
+                        //     elements = element
+
+                        // });
+                    },
+                    // should be false.
                     enabled: true
                 }
 
@@ -406,7 +431,7 @@ function dataTables() {
 
 
         table.on('select deselect', function () {
-            // var selectedRows = table.rows({ selected: true }).count();
+            var selectedRows = table.rows({ selected: true }).count();
 
             // console.log(selectedRows);
             // table.button(4).enable(selectedRows === 1);

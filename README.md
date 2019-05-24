@@ -80,4 +80,10 @@ Requirements:
 Object Oriented Programming
 
 teachers:
-Marcin Skoczylas (m.skoczylas@pb.edu.pl) 
+Marcin Skoczylas (m.skoczylas@pb.edu.pl)
+
+TODO: 
+- presentation and transcript
+- explaining the projects and what learnt
+- adding books information
+  
