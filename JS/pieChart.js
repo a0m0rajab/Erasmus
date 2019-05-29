@@ -13,17 +13,28 @@ function getRandomColor() {
 
 function createCanvas() {
 
+    createPureCanvas();
+    legendDiv();
+}
 
-    let newCanvas = document.createElement("CANVAS");
+function createPureCanvas() {
     let drawingArea = document.getElementById("drawingArea");
+    let newCanvas = document.createElement("CANVAS");
     var ctx = newCanvas.getContext("2d");
     newCanvas.width = 300;
     newCanvas.height = 300;
+    drawingArea.appendChild(newCanvas);
+    this.myCanvas = newCanvas;
+
+
+}
+
+function legendDiv() {
+    let drawingArea = document.getElementById("drawingArea");
+
     // set id as myLegend, much easier tho.
     var newDiv = document.createElement("div");
-    drawingArea.appendChild(newCanvas);
     drawingArea.appendChild(newDiv);
-    this.myCanvas = newCanvas;
     this.myLegend = newDiv;
 }
 
@@ -55,7 +66,7 @@ function drawPieSlice(ctx, centerX, centerY, radius, startAngle, endAngle, color
     ctx.fill();
 }
 
-var Piechart = function (options) {
+var Piechart = function(options) {
 
 }
 
@@ -170,6 +181,10 @@ function drawPichart(data, category, doughnutHoleSize) {
 
 
 
-
+// source : https://web.archive.org/web/20130407101311/http://www.worldwidewhat.net/2011/06/draw-a-line-graph-using-html5-canvas/
 // source : https://stackoverflow.com/questions/1484506/random-color-generator 
 // source : https://code.tutsplus.com/tutorials/how-to-draw-a-pie-chart-and-doughnut-chart-using-javascript-and-html5-canvas--cms-27197
+
+//TODO: 
+// REMOVE when load new file, 
+// check why cant load two files in raw.

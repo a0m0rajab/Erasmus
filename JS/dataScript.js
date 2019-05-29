@@ -5,28 +5,94 @@ let textShowed = 0;
 let colAdded = false;
 let headerDataShowed = false;
 let seprator = ",";
-// read data from file and create The table.
-function CSVtable() {
+let exampleFiles = ["examples/chartData.csv", "examples/GraphLine.csv"];
+// local file reader warper.
+function localCSVloader() {
     readFile();
+    // CSVtable();
+}
+
+// create CSV table and destroy the old one.
+function CSVtable() {
+    createTable(source);
+    destroyDataTables();
     createTable(source);
     dataTables();
+}
+// external file reader warper 
+function externalFile(url) {
+    readText(url);
+}
+
+// load example function to show a specific example from external file
+function LoadExample() {
+    switch (document.getElementById('ExamlpesDropDown').selectedIndex) {
+        case 0:
+
+            externalFile(exampleFiles[0]);
+
+            break;
+        case 1:
+            externalFile(exampleFiles[1]);
+
+
+            break;
+
+    }
+}
+
+let local = []
+let remote;
+// written for more than one file - optimizable
+function fileSelect(evt) {
+    local = []
+    var files = evt.files; // FileList object
+    for (let file of files) {
+        let reader = new FileReader();
+        reader.onload = function() {
+            // out.innerText +=reader.result +"\n";
+            local.push({ data: reader.result, name: file.name, type: file.type });
+            localCSVloader();
+        }
+        reader.readAsText(file);
+    }
+    reset();
+    showElemants();
 }
 // file reader 
 function readFile() {
     let text = "";
-    source = [];
+
     local.forEach(file => {
         // console.log(file.data)
-        let lines = file.data.split("\n")
-        lines.forEach(line => {
-            let rows = line.split(seprator);
-            source.push(rows)
-            if (rows.length > colNumber) {
-                colNumber = rows.length;
-            }
-        })
+        dataToArray(file.data)
     })
 }
+
+// parse CSV text Data to array
+function dataToArray(textData) {
+    source = [];
+    let lines = textData.split("\n")
+    lines.forEach(line => {
+        let rows = line.split(seprator);
+        source.push(rows)
+        if (rows.length > colNumber) {
+            colNumber = rows.length;
+        }
+    })
+    CSVtable();
+}
+// Read from external link.
+function readText(url) {
+    fetch(url)
+        .then(r => r.text())
+        //response of fetch() is r
+        .then(t => dataToArray(t));
+
+    //response of text() is t
+}
+
+
 // add extra text area to use it for data input.
 function addFeild() {
     // appendDataColumn();
@@ -50,6 +116,7 @@ function setHeader() {
     }
 
 }
+
 function showHeaderData() {
     headerDataShowed = true;
     for (let index = 0; index < colNumber; index++) {
@@ -136,10 +203,10 @@ function createTableElemants(tableData, name) {
     }
 
 
-    tableData.forEach(function (rowData) {
+    tableData.forEach(function(rowData) {
         var row = document.createElement('tr');
 
-        rowData.forEach(function (cellData) {
+        rowData.forEach(function(cellData) {
             var cell = document.createElement('td');
             cell.appendChild(document.createTextNode(cellData));
             row.appendChild(cell);
@@ -165,28 +232,6 @@ function clearTable() {
     table.destroy();
 }
 
-let local = []
-let remote;
-// written for more than one file - optimizable
-function fileSelect(evt) {
-    local = []
-    var files = evt.files; // FileList object
-
-    for (let file of files) {
-        let reader = new FileReader();
-
-        reader.onload = function () {
-            // out.innerText +=reader.result +"\n";
-            local.push({ data: reader.result, name: file.name, type: file.type });
-            CSVtable();
-        }
-        reader.readAsText(file);
-
-    }
-    reset();
-    showElemants();
-
-}
 // hide exporter , data adder and feild adder.
 function hideElemants() {
     document.getElementById("tableEditor").style.display = "none";
@@ -244,10 +289,10 @@ function reset() {
 function createCell(cell, text, style) {
     var div = document.createElement('div'), // create DIV element
         txt = document.createTextNode(text); // create text node
-    div.appendChild(txt);                    // append text node to the DIV
-    div.setAttribute('class', style);        // set DIV class attribute
-    div.setAttribute('className', style);    // set DIV class attribute for IE (?!)
-    cell.appendChild(div);                   // append DIV to the table cell
+    div.appendChild(txt); // append text node to the DIV
+    div.setAttribute('class', style); // set DIV class attribute
+    div.setAttribute('className', style); // set DIV class attribute for IE (?!)
+    cell.appendChild(div); // append DIV to the table cell
 }
 // append column to the HTML table
 function appendColumn() {
@@ -284,7 +329,7 @@ function addColumn() {
 
         // add empty data for ery record and for the first one add the column name.
         source.forEach(
-            function (row, i) {
+            function(row, i) {
                 if (i == 0) {
                     row.push(colName)
                 } else {
@@ -307,10 +352,13 @@ function dataTables() {
     // });
 
     // $('#table').DataTable();
-    $(document).ready(function () {
+    $(document).ready(function() {
         let table = $('#table').DataTable({
-            "lengthMenu": [[10, 25, 50, 75, 100, -1], [10, 25, 50, 75, 100, "All"]]
-            , select: {
+            "lengthMenu": [
+                [10, 25, 50, 75, 100, -1],
+                [10, 25, 50, 75, 100, "All"]
+            ],
+            select: {
                 blurable: true
             },
             // data:source,
@@ -319,11 +367,10 @@ function dataTables() {
                 'copyHtml5',
                 'excelHtml5',
                 'csvHtml5',
-                'pdfHtml5'
-                ,
+                'pdfHtml5',
                 {
                     text: 'Add Data',
-                    action: function (e, dt, node, config) {
+                    action: function(e, dt, node, config) {
                         if (textShowed == 0 || colAdded) {
                             textInputsCreator();
                             colAdded = false;
@@ -347,7 +394,7 @@ function dataTables() {
                 },
                 {
                     text: 'Delete rows',
-                    action: function (e, dt, node, config) {
+                    action: function(e, dt, node, config) {
                         let count = dt.rows({ selected: true }).count();
                         //  for testing, finding an array that get all the data at it, to use for drawing later.
                         // console.log(dt.rows({ selected: true }).data());
@@ -363,21 +410,21 @@ function dataTables() {
                 },
                 {
                     text: 'set header',
-                    action: function (e, dt, node, config) {
+                    action: function(e, dt, node, config) {
                         setHeader();
                     },
                     enabled: true
                 },
                 {
                     text: 'add column',
-                    action: function (e, dt, node, config) {
+                    action: function(e, dt, node, config) {
                         appendDataColumn()
                     },
                     enabled: true
                 }, {
 
                     text: 'Draw Pie Chart',
-                    action: function (e, dt, node, config) {
+                    action: function(e, dt, node, config) {
 
                         let dataArray = dt.rows({ selected: true }).data().toArray();
                         let category = source[0];
@@ -385,14 +432,40 @@ function dataTables() {
                         for (const key in dataArray) {
                             // data Tables returned the array as String, so i had to parse it into integer before using it.
                             // StackOver flow used.
-                            let x= dataArray[key].map(Number);
+                            let x = dataArray[key].map(Number);
                             // let y = [1,2,3,4,5];
-                            drawPichart(x, category,0.5);
+                            drawPichart(x, category, 0.5);
                         }
                         // dataArray.forEach(element => {
                         //     elements = element
 
                         // });
+                    },
+                    // should be false.
+                    enabled: true
+                }, {
+
+                    text: 'Graph Line',
+                    action: function(e, dt, node, config) {
+                        // use this method or the method of getting the rows then change the graph line js, its the same but you can use the other one at the same time
+                        // so you can have a less code here but more there, it depends on your need. both of them works.
+
+                        // get the selected rows indexes, then get the numbers of the specific coloums 
+                        // https://datatables.net/forums/discussion/43066/getting-values-from-a-single-column-for-all-selected-rows
+
+                        let x = getElementsOfRow(dt, 0, 1);
+                        let y = getElementsOfRow(dt, 1, 1);
+                        let z = getElementsOfRow(dt, 2, 1);
+                        let a = getElementsOfRow(dt, 3);
+                        drawLineGraph(x, y, z, a);
+
+
+                        // console.log(x);
+                        // console.log(y);
+                        // console.log(z);
+                        // console.log(a);
+
+
                     },
                     // should be false.
                     enabled: true
@@ -402,6 +475,15 @@ function dataTables() {
         });
         table.buttons().container()
             .appendTo('#table_wrapper .col-md-6:eq(0)');
+
+        function getElementsOfRow(dt, colNumber, number) {
+            let rows = dt.rows({ selected: true }).indexes();
+            let array = dt.cells(rows, colNumber).data().toArray();
+            if (number) {
+                return array.map(Number);
+            }
+            return array;
+        }
 
         // there is a bug at set header -- need to check. 
         // does the rows.data() return the header? if not then you have to add manuallly , and probably thats the bug 
@@ -417,6 +499,7 @@ function dataTables() {
             data.forEach(e => { source.push(e) })
 
         }
+
         function removeRowSource() {
             let rows = table.rows('.selected').indexes().toArray();
             // console.log("rows information");
@@ -424,18 +507,19 @@ function dataTables() {
                 source.splice(e, 0);
             });
         }
+
         function myCallbackFunction(updatedCell, updatedRow, oldValue) {
             console.log("The new value for the cell is: " + updatedCell.data());
             console.log("The values for each cell in that row are: " + updatedRow.data());
         }
 
 
-        table.on('select deselect', function () {
+        table.on('select deselect', function() {
             var selectedRows = table.rows({ selected: true }).count();
 
             // console.log(selectedRows);
             // table.button(4).enable(selectedRows === 1);
-            table.button(5).enable(selectedRows > 0);
+            //table.button(5).enable(selectedRows > 0);
         });
         table.MakeCellsEditable({
             "onUpdate": updateSource
@@ -443,9 +527,21 @@ function dataTables() {
 
     });
 }
+
 function destroyDataTables() {
     if ($.fn.DataTable.isDataTable('#table')) {
         $('#table').DataTable().destroy();
         // $('#table').empty();
     };
 }
+
+/**
+ * TODO: 
+ * read from external FIle 
+ * clean the code 
+ * add examples for each function 
+ * redesgin the GUI
+ * check botstrap 
+ * remove the unneccesarly libraries.
+ * if file loaded in null it brings the source code of the webPage...
+ */
