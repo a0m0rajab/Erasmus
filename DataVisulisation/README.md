@@ -16,7 +16,7 @@ I used JavaScript for this class since its much easier to visualize data using i
 ## Read CSV file
 At this task I used DataTables library to show the data on the screen and manipulated the cell by using an open source library that can do the work of the paid version of DataTables
 
-![line graph](\screenShots\reader.PNG)
+![line graph](screenShots/reader.png)
 
 
 #### Why I used data tables? 
@@ -26,23 +26,23 @@ Cause it was useful when i used it in my previous project of visa application an
 I draw it based on an old tutorial which i will write the link of it later. 
 i just changed some functions in the tutorial to draw it in the wanted way, i will write another tutorial for it later explain every bit of the code.
 
-![line graph](\screenShots\lineGraph.PNG)
+![line graph](screenShots/lineGraph.png)
 
 ## bubble chart
 I used a tricky solution for this one, by sending an extra array to the line graph then using this array to change the size of the circle.
 
-![bubbleChart](\screenShots\bubbleChart.PNG)
+![bubbleChart](screenShots/bubbleChart.png)
 
 
 ## Doughnuts visualization
 Even here i used a tutorial which i will refer to it later.
 
-![pilchard](\screenShots\pieChart.PNG)
+![pilchard](screenShots/pieChart.png)
 
 ## HeatMap
 I used a remade data on heat maps samples, filter function at canvas and HSL colors for it.
 
-![HeatMap](\screenShots\HeatMap.PNG)
+![HeatMap](screenShots/HeatMap.png)
 
 
 ### TODO: 
