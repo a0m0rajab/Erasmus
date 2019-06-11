@@ -7,21 +7,42 @@ var yPadding = 30;
 // let a = ["test", "hello", "world", "happy", "notReally"]
 
 // class and constructor -- more usefull?
-function setData(x, y, z, a) {
+function setData(x, y, z, a, b) {
     this.x = x;
     this.y = y;
     this.z = z;
     this.a = a;
+    this.b = b;
 
 }
 // warper for calling the function
-function drawLineGraph(x, y, z, a) {
+function drawLineGraph(x, y, z, a, b) {
     resetDrawingArea();
-    setData(x, y, z, a);
+    setData(x, y, z, a, b);
     createPureCanvas();
     graph = myCanvas;
+    if (b) {
+        min = Math.min(...b);
+        max = Math.max(...b);
+        c = []
+        b.forEach(element => {
+            element = normaliseScaled(element, min, max, 4, 20)
+            c.push(element)
+        });
+
+        drawGraph(c);
+    }
     drawGraph();
 }
+
+function normaliseScaled(value, dataMin, dataMax, min, max) {
+    return min + (max - min) * normaliseZeroOne(value, dataMin, dataMax);
+}
+
+function normaliseZeroOne(value, dataMin, dataMax) {
+    return (value - dataMin) / (dataMax - dataMin);
+}
+
 
 // Returns the max Y value in our data list
 function getMaxY() {
@@ -78,8 +99,9 @@ function axises(graph, ctx) {
     ctx.stroke();
 }
 
-function drawGraph() {
+function drawGraph(b) {
     // graph = document.getElementById("");
+
     var c = graph.getContext('2d');
 
     c.lineWidth = 2;
@@ -116,20 +138,31 @@ function drawGraph() {
     c.strokeStyle = '#f00';
 
     // Draw the line graph
-    c.beginPath();
-    c.moveTo(getXPixel(x[0]), getYPixel(y[0]));
-    for (var i = 1; i < y.length; i++) {
-        c.lineTo(getXPixel(x[i]), getYPixel(y[i]));
+    if (!b) {
+        c.beginPath();
+        c.moveTo(getXPixel(x[0]), getYPixel(y[0]));
+        for (var i = 1; i < y.length; i++) {
+            c.lineTo(getXPixel(x[i]), getYPixel(y[i]));
+        }
+        c.stroke();
     }
-    c.stroke();
 
     // Draw the dots
     // c.fillStyle = '#333';
 
+    // to make the bubble chart size...
+    if (!b) {
+        size = 4;
+    }
     for (var i = 0; i < y.length; i++) {
         c.beginPath();
         c.fillStyle = heatMapColorforValue(z[i], 255);
-        c.arc(getXPixel(x[i]), getYPixel(y[i]), 4, 0, Math.PI * 2, true);
+        if (!b) {
+            c.arc(getXPixel(x[i]), getYPixel(y[i]), 4, 0, Math.PI * 2, true);
+        } else {
+            c.arc(getXPixel(x[i]), getYPixel(y[i]), b[i], 0, Math.PI * 2, true);
+        }
+
         c.fill();
     }
 }

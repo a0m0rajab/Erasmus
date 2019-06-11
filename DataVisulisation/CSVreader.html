@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <title>CSV Table </title>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+    </style>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.5.6/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/select/1.3.0/css/select.dataTables.min.css">
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.6/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.html5.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.2.min.js" integrity="sha256-lZFHibXzMHo3GGeehn1hudTAP3Sc0uKXBXAzHX1sjtk=" crossorigin="anonymous"></script>
+    <script src="http://cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.2.min.js" integrity="sha256-lZFHibXzMHo3GGeehn1hudTAP3Sc0uKXBXAzHX1sjtk=" crossorigin="anonymous"></script>
+    <script src="http://cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.6/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/select/1.3.0/js/dataTables.select.min.js"></script>
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css">
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script> -->
+    <!-- <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script> -->
+
+
+
+
+
+</head>
+<style>
+    /* table {
+        border-collapse: collapse;
+    }
+
+    th {
+        color: rgb(235, 252, 5);
+        padding: 5px 5px;
+    }
+
+    td {
+        border: 1px solid rgb(30, 255, 0);
+        padding: 5px 5px;
+        text-align: center;
+    } */
+</style>
+
+<body>
+    <h2 id=title></h2>
+
+    <p id=outA></p>
+    <!-- if you wrote mupltiple at the input it will let you choose more than one file -->
+    Seprator = <input type=text value="," id=sepratorVal onChange='changeSeprator()' style="font: 20px arial, sans-serif;" />
+    <br> File link = <input type=text value="https://a0m0rajab.github.io/Erasmus/examples/GraphLine.csv" id=link style="font: 20px arial, sans-serif;" />
+    <br> Examples = <select onchange="LoadExample()" id="ExamlpesDropDown">
+        <option > Pie Chart loader </option>
+        <option > Line graph loader </option>
+        <option > Bubble chart loader </option>
+
+        <!-- <option >Minus example - Works </option>
+        <option >Minus example - Error </option> -->
+       
+    </select>
+    <br>
+    <button id="load" onClick="externalFile(link.value)">Load file</button>
+
+    <br>
+    <input type=file id=loader onChange='fileSelect(this)' />
+    <div id=tableEditor>
+        <br>
+        <!-- <input type="button" value="Add Data" id=adder onclick='addData()' /> -->
+        <!-- <input type="button" value="Set Header" id=adder onclick='setHeader()' /> -->
+
+        <!-- <input type="button" value="export Data" id=exporter onclick='exportFile()' />
+        <input type="button" value="Add feild" id=feildplus onclick='addFeild()' />
+        <input type="button" value="Enable Editing" id=dataTables onclick='dataTables()' /> -->
+        <!-- <input type="button" value="Add coloumn" id=coloumn onclick='appendDataColumn()' /> -->
+    </div>
+
+    <hr id=header1>
+    <div id=inputs></div>
+    <!-- <hr /> -->
+    <hr>
+    <!-- contenteditable="true" no need for it anymore. -->
+    <table id=table></table>
+    <hr />
+    <hr />
+
+    <div id=drawingArea></div>
+
+
+
+    <script>
+        title.innerText = "CSV";
+        hideElemants();
+        ScriptsLoader();
+
+        //  reportA("start");
+    </script>
+    <script src="JS/dataTables.cellEdit.js"></script>
+    <script src="JS/dataScript.js"></script>
+    <script src="JS/pieChart.js"></script>
+    <script src="JS/lineGraph.js"></script>
+
+</body>
+
+
+</html>
+
+<!-- TODO : 
+    GO TO DATATABLES then MOVE TO PURE JS 
+    check if we need to storage data - you may add it depends on the file size or have two methods 
+    change update the table and write methods with storage data in local, and without it.
+    change the seprator manually [done]
+    Change the delimitar based on the text -     Check the seprator 
+    check the text before parsing  -- yeah its a bug xD 
+    build a better UI 
+    add remote file
+    add text reader -- parse from it ==> text feild 
+    export the file  [done]
+    be tensive to the file format/data 
+    make a better table by using JS DataTables
+    check other projects to compare and see what can you do.
+    file name when download ==> based on checkBox
+    // for the case intensive string comparasion- you can just lower case both of them xD
+    ToCheck :
+    google resreach about CSV js project 
+    https://stackoverflow.com/questions/30223361/js-filereader-read-csv-from-local-file-jquery-csv
+    https://stackoverflow.com/questions/1293147/javascript-code-to-parse-csv-data
+    https://www.papaparse.com/
+    https://en.wikipedia.org/wiki/Comma-separated_values
+    https://github.com/okfn/csv.js/
+    https://github.com/evanplaice/jquery-csv
+-->
