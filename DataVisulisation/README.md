@@ -42,7 +42,7 @@ Even here i used a tutorial which i will refer to it later.
 ## HeatMap
 I used a remade data on heat maps samples, filter function at canvas and HSL colors for it.
 
-![HeatMap](screenShots/HeatMap.png)
+![HeatMap](screenShots/heatMap.png)
 
 
 ### TODO: 
