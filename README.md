@@ -86,4 +86,4 @@ TODO:
 - presentation and transcript
 - explaining the projects and what learnt
 - adding books information
-  
+- update the file and push class work soon.  
